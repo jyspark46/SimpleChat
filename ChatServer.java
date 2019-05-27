@@ -51,7 +51,11 @@ class ChatThread extends Thread{
 					break;
 				if(line.indexOf("/to ") == 0){
 					sendmsg(line);
-				}else
+				}
+				if(line.equals("/userlist")){
+					send_userlist(id);
+				}
+				else
 					broadcast(id + " : " + line);
 			}
 		}catch(Exception ex){
@@ -81,6 +85,9 @@ class ChatThread extends Thread{
 			} // if
 		}
 	} // sendmsg
+    	// 기능 2번
+    	// iter.next() 의 값이 hm.get(id) 의 값과 다르면 즉, 본인이 아니면
+    	// broadcast 실행 (값이 같으면, 즉 본인이면 실행 x)
 	public void broadcast(String msg){
 		synchronized(hm){
 			Collection collection = hm.values();
@@ -92,4 +99,21 @@ class ChatThread extends Thread{
 			}
 		}
 	} // broadcast
+  	// 기능 1번
+  	// 1. run()에서 읽은 값이 /userlist 이면 send_userlist()를 호출
+  	// 2. keyset에 hm의 key를 불러옴
+  	// 3. hm의 size도 불러옴
+  	// 4. userlist 정보를 보낼 대상 설정
+  	// 5. pw 정의 후 keyset 출력 & 사용자 수도 출력
+  	public void send_userlist(String id){
+    		Set keyset = hm.keySet();
+    		int size = hm.size();
+		Object obj = hm.get(id);
+		PrintWriter pw = (PrintWriter)obj;
+		pw.println(keyset);
+		pw.flush();
+		pw.println("user count: "+ size);
+		pw.flush();
+  	}
 }
+
